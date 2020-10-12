@@ -10,9 +10,10 @@ def call(Map params = [:]) {
     def ref = params.get('ref')
 
     sh('ls -la')
-    dir("temp-repoHasTests${env.BUILD_ID}") {
-        sh("git clone ${repoUrl} repo")
-        checkout([$class: 'GitSCM', branches: [[name: ref ]], userRemoteConfigs: [[url: repoUrl ]]])
+    dir("/tmp/repoHasTests${env.BUILD_ID}") {
+        sh("git clone --mirror ${repoUrl} .")
+        sh("git config --bool core.bare false")
+        sh("git reset --hard ${ref}")
 
         sh('ls -la')
         // check STI first
